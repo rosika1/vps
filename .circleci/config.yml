@@ -1,27 +1,41 @@
------BEGIN RSA PRIVATE KEY-----
-MIIEpAIBAAKCAQEAqWsaO2c06RRNiBNzFi6+2BpCvorPaQ3CIUT1iYDtBw+qDomT
-UpdCS6TVoqL0z4R2LZVzFtBpcmBUD9D0roNaUvM0ZBx/2FUTzeZ9CALQv/xXP5qI
-H/pg3BX/ILishdk7q9poJDKIHShtLdY/GE7f7TwGHBL9xbLbqcE7C08KJk9gVq5k
-abzomA1n9LaMg3SZcfvFuA5XHagzLSKLTp8z0uhEBtr47OL7EfYJSamo2xrX5B4h
-r3lHJ6s23xjKcxCDIZ+cChEA/in+CCpXLykq2AaFMhOdeByuLWfPckMsfqFkVlh9
-EGq5rvxA2YJ4g/1yKBVqtKPXWRMZcMliMQLNmwIDAQABAoIBAFL0iIGxxWyjbltE
-+sNP3E7AfRIDsg+ElxvnQjs0D9u3RdOcdbCpM+MKMTlThX/fImarmREAt8EzfbXI
-4SZaVu3q/CpQ8iChd/MH+wzjJAf9rVMNfb36wVbCxovlIUTg26EIbpnazF9Knjsl
-fvuOE4N8Mpmoiu405+41GY4uA5BB3OAt67Ef4vZzCeLcDh2LkZv+ufuJrXP0dnHs
-o5ULyh3vDT7/JvWElN51liuFoqJJrjzdgaPSZL49aP5UENGNmAAhxKVygVeiMNPS
-5G7sJoQ3lEQ/qo6efIeb7zCibC5MSBvzmeIUDn4CJFconJcKVCgmPqFbbKe97/BZ
-N2ugbKECgYEA5FbnQj8BpVvG1XfCn7A8jgiu+VhMy9ebvceivtjwCFp3jUoOn+xf
-+1HGm0HEq4x1zn4Kzwajm53Xdpg8X6wCDXES3KfyZtdGggyJe4YheVbgeLZW/nIa
-aK/uaDzLQgjGHvcNztauUd0+9e985DfQQCgj9z+aTLxLCxZNkA8ZCEMCgYEAvfD7
-KgZC7apZnrXlq11H+Xsy72zjyrK8VCirbIYnq2q1pYFtEGKHGK4nAB+CdyANnk22
-y4p4xlqZSBrZK0d523QhLAMU5SflwyBwZniqWCs2q46tExAVjVHA5EbMfMuIKFDr
-IGs+xTRB3GoeLyD+oPKqURvlQmf7Md4GQ+ru28kCgYBFBGN4KZU0xw3NfhpsrBdR
-kxxYL7Fet7fSYCI371h2Heoe4bCT9B162Ffgm7t3YshE9uILe2U+ZzI2HYO6I0Kn
-j3L1ESp6nT0pl+KCXKOHipPkyLB4zkJfPDYieaWyOvava1tYFpmwEuCx84ZbcOdY
-TQm59RaNdSh1nHMrRPT7AwKBgQCP+nGJI4HsQir5AYz83xLF7Dtp/jKV3fKgIMwA
-0ZiUeakDsh4IQ4eAj9KEZ14wCp4IF4SuuWJfiSGT5LYl9mJKlbbnc9aM9jdWN+q7
-4k/N0cP5O4e6YYDUxNngsEIlfurRFLWGt4S3W6to9w+2Td52BjxQi0K3mbZx0IkT
-RqyU8QKBgQCk+jIWYRB+yNRM9go6idf8yDzNMfgb077eiijhmo3AHgw2MWJ2O5qW
-QkYA0BMJI5d0Xh2Qlzkk5AWnE7/KrCycDYpUoMTKgpuHNKZ0rkNQVAONW2Zo+Ipq
-ZAPlbQEWVFcy4QG+otirMvb3jpFEg731JbzafgBxXPPR4zWFyqJGVg==
------END RSA PRIVATE KEY-----
+version: 2.1
+
+orbs:
+  # The python orb contains a set of prepackaged CircleCI configuration you can use repeatedly in your configuration files
+  # Orb commands and jobs help you with common scripting around a language/tool
+  # so you dont have to copy and paste it everywhere.
+  # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/python
+  python: circleci/python@1.2
+
+workflows:
+  sample:  # This is the name of the workflow, feel free to change it to better match your workflow.
+    # Inside the workflow, you define the jobs you want to run. 
+    # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows 
+    jobs:
+      - build-and-test
+
+
+jobs:
+  build-and-test:  # This is the name of the job, feel free to change it to better match what you're trying to do!
+    # These next lines defines a Docker executors: https://circleci.com/docs/2.0/executor-types/
+    # You can specify an image from Dockerhub or use one of the convenience images from CircleCI's Developer Hub
+    # A list of available CircleCI Docker convenience images are available here: https://circleci.com/developer/images/image/cimg/python
+    # The executor is the environment in which the steps below will be executed - below will use a python 3.9 container
+    # Change the version below to your required version of python
+    docker:
+      - image: cimg/python:3.8
+    # Checkout the code as the first step. This is a dedicated CircleCI step.
+    # The python orb's install-packages step will install the dependencies from a Pipfile via Pipenv by default.
+    # Here we're making sure we use just use the system-wide pip. By default it uses the project root's requirements.txt.
+    # Then run your tests!
+    # CircleCI will report the results back to your VCS provider.
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+          # app-dir: ~/project/package-directory/  # If you're requirements.txt isn't in the root directory.
+          # pip-dependency-file: test-requirements.txt  # if you have a different name for your requirements file, maybe one that combines your runtime and test requirements.
+      - run:
+          name: Run tests
+          # This assumes pytest is installed via the install-package step above
+          command: pytest
